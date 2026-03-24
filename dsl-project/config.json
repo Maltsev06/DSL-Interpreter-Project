@@ -1,0 +1,65 @@
+{
+  "app": {
+    "name": "MyService",
+    "version": "1.0.0",
+    "env": "dev"
+  },
+  "server": {
+    "host": "localhost",
+    "port": 8080,
+    "logLevel": "info"
+  },
+  "features": {
+    "enableCache": true,
+    "enableMetrics": false,
+    "experimental": [ "newUI", "fastMode" ]
+  },
+  "workflow": {
+    "steps": [
+      {
+        "type": "set","var": "appName","value": "${app.name}"
+      },
+      {
+        "type": "set","var": "env","value": "${app.env}"
+      },
+      {
+        "type": "print","message": "Starting ${appName} in ${env} environment"
+      },
+      {
+        "type": "set","var": "requests","value": 50
+      },
+      {
+        "type": "set","var": "costPerRequest","value": 25
+      },
+      {
+        "type": "add","var": "totalCost","a": "${requests}","b": 0
+      },
+      {
+        "type": "multiply","var": "totalCost","a": "${requests}","b": "${costPerRequest}"
+      },
+      {
+        "type": "if",
+        "condition": {
+          "left": "${totalCost}","op": ">",
+          "right": 1000
+        },
+        "then": [
+          {
+            "type": "print",
+            "message": "Warning: High cost ${totalCost}!"
+          }
+        ],
+        "else": [
+          {
+            "type": "print",
+            "message": "Info: Cost is acceptable ${totalCost}"
+          }
+        ]
+      },
+      {
+        "type": "summary",
+        "fields": [ "requests", "costPerRequest", "totalCost" ]
+      }
+    ]
+  }
+}
